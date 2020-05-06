@@ -1,0 +1,23 @@
+from pandas_datareader import data as pdr
+import matplotlib.pyplot as plt
+import numpy as np
+
+def volatility_comparer(ticker1, ticker2, start_date, end_date):
+    #Standardizes the return for two companies. Imput is 'yyyy-mm-dd'
+    ticker1_data = pdr.DataReader(ticker1, data_source = 'yahoo', start = start_date, end = end_date)
+    ticker2_data = pdr.DataReader(ticker2, data_source = 'yahoo', start = start_date, end = end_date)
+    ticker1_data['Daily_Return'] = (ticker1_data['Adj Close']/ticker1_data['Adj Close'].shift(1)) - 1
+    ticker2_data['Daily_Return'] = (ticker2_data['Adj Close']/ticker2_data['Adj Close'].shift(1)) - 1
+    fig = plt.figure(figsize = (9,5))
+    ax = plt.axes()
+    ax.plot(ticker1_data['Daily_Return'], label = ticker1, color = 'navy')
+    ax.plot(ticker2_data['Daily_Return'], label = ticker2, color = 'green')
+    plt.axhline(y = 0, color='red', linestyle='--')
+    plt.title('Volitility Comparison:'+ticker1+' VS. '+ticker2, color = 'navy')
+    plt.ylabel('Return (%)', color = 'navy')
+    plt.xlabel('Date', color = 'navy')
+    plt.xticks(rotation=45)
+    plt.legend()
+    
+    #Use for any two stocks and enter start and end date here
+volatility_comparer('TSLA','PSA','2020-01-02','2020-05-06')
